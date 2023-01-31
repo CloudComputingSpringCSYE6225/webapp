@@ -1,7 +1,7 @@
 //search a particular to-do object
 import {setResponse} from "./index.js";
 import bcrypt from "bcrypt";
-import client from "../utils/DBConnection.js";
+import client from "../config/DBConnection.js";
 
 //express app invokes the function to create new user
 export const create = async (req, res) => {
