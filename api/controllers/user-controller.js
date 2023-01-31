@@ -22,7 +22,6 @@ export const create = async (req, res) => {
         const user = req.body
         if(!user.first_name || !user.last_name || !user.username || !user.password)
             return setResponse({message: "Username, Firstname, Lastname and Password are mandatory fields"}, 400, res)
-
         const validEmail = String(user.username)
             .toLowerCase()
             .match(
