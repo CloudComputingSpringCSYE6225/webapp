@@ -1,6 +1,8 @@
 import {setResponse} from "../controllers/index.js";
 import client from "../config/DBConnection.js";
 import bcrypt from "bcrypt";
+import db from "../model/index.js";
+const User = db.users
 
 export const basicAuth = async (req, res, next) => {
     // If 'Authorization' header not present
@@ -18,27 +20,25 @@ export const basicAuth = async (req, res, next) => {
         console.log("Middleware username: "+ username)
         console.log("Middleware pwd: "+ password)
 
-        await client.query(`Select * from users where username='${username}'`, async (err, result)=>{
-            try{
-                if(result.rows.length===0){
-                    // console.log("No such user")
-                    return setResponse({message: "Please check username. Authorization in Middleware failed"}, 401, res)
-                } else {
-                    const validPassword = await bcrypt.compare(password, result.rows[0].password);
-                    if (!validPassword)
-                        return setResponse({message: "Password incorrect. Authorization in Middleware failed"}, 401, res)
-                }
+        const foundUser = await User.findOne({
+                where: {username},
+            })
+            .catch((error)=>  setResponse(error, 400, res))
 
-                req.currUser = {
-                    id: result.rows[0].id,
-                    username: result.rows[0].username,
-                    password: result.rows[0].password
-                }
-                // Continue the execution
-                next()
-            }catch (error) {
-                return setResponse(error, 401, res)
-            }
-        });
+        if(!foundUser)
+            return setResponse({message: "Please check username. Authorization in Middleware failed"}, 401, res)
+
+        const validPassword = await bcrypt.compare(password, foundUser.password);
+        if (!validPassword)
+            return setResponse({message: "Password incorrect. Authorization in Middleware failed"}, 401, res)
+
+        console.log("Middleware found User"+ typeof foundUser.id)
+        req.currUser = {
+            id: foundUser.id,
+            username: foundUser.username,
+            password: foundUser.password
+        }
+        // Continue the execution
+        next()
     }
 }

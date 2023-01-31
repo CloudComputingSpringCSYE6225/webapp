@@ -20,7 +20,7 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-// db.users = userModel(sequelize, Sequelize);
+db.users = userModel(sequelize, Sequelize);
 
 // db.connectionTest = async (req, res) => {
 //     try {

@@ -6,6 +6,7 @@ export const userModel = (sequelize, Sequelize) => {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
+                allowNull: false
             },
             first_name: {
                 type: Sequelize.STRING,
@@ -52,25 +53,14 @@ export const userModel = (sequelize, Sequelize) => {
                 defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
                 allowNull: false,
             }
-        },{
+        },
+        {
+            updatedAt: 'account_updated',
+            createdAt: 'account_created',
+        },
+        {
             initialAutoIncrement: 1,
         }
     )
-
-    sequelize.query(`CREATE OR REPLACE FUNCTION update_modified_column()   
-                        RETURNS TRIGGER AS $$
-                        BEGIN
-                             IF row(NEW.*) IS DISTINCT FROM row(OLD.*) THEN
-                                NEW.account_updated = now();
-                                NEW.account_created := OLD.account_created;
-                                RETURN NEW;
-                            ELSE
-                                RETURN OLD;
-                            END IF;
-                        END;
-                        $$ language 'plpgsql';`
-    )
-
-    sequelize.query(`CREATE TRIGGER update_user_modtime BEFORE UPDATE ON user FOR EACH ROW EXECUTE PROCEDURE  update_modified_column();`)
     return User
 }
