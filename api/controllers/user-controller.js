@@ -2,7 +2,7 @@
 import {setResponse} from "./index.js";
 import bcrypt from "bcrypt";
 import client from "../config/DBConnection.js";
-import db from "../model/index.js";
+import db from "../models/index.js";
 const User = db.users
 
 //express app invokes the function to create new user

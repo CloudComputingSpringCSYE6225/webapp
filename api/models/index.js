@@ -1,6 +1,11 @@
-import {dbConfig} from "../config/config.js";
+import {dbEnvConfig} from "../config/config.js";
 import {Sequelize} from "sequelize";
 import {userModel} from "./User.js";
+import dotenv from "dotenv"
+dotenv.config()
+
+const env = process.env.NODE_ENV || 'development';
+const dbConfig = dbEnvConfig[env]
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,

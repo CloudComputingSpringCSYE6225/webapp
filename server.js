@@ -1,7 +1,7 @@
 import app from "./api/app.js"
 import client from "./api/config/DBConnection.js"
 import dotenv from "dotenv"
-import db from "./api/model/index.js";
+import db from "./api/models/index.js";
 
 dotenv.config()
 

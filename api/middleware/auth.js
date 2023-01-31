@@ -1,7 +1,7 @@
 import {setResponse} from "../controllers/index.js";
 import client from "../config/DBConnection.js";
 import bcrypt from "bcrypt";
-import db from "../model/index.js";
+import db from "../models/index.js";
 const User = db.users
 
 export const basicAuth = async (req, res, next) => {
