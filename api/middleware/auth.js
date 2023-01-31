@@ -1,4 +1,5 @@
 import {setResponse} from "../controllers/index.js";
+
 import client from "../config/DBConnection.js";
 import bcrypt from "bcrypt";
 import db from "../model/index.js";
@@ -40,5 +41,6 @@ export const basicAuth = async (req, res, next) => {
         }
         // Continue the execution
         next()
+
     }
 }
