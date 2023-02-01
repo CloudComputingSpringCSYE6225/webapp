@@ -6,7 +6,7 @@
 ### What is this?
 Backend API to create a user (unauthorized route) and get and update a particular user (authorized route)
 The Database used is PostgreSQL
-Base64 Authentication is implemented
+Base64 Authentication is implemented.
 
 ### Prerequisites
 - `git` (configured with ssh) [[link](https://git-scm.com/downloads)]
