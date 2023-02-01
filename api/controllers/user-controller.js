@@ -50,7 +50,7 @@ export const create = async (req, res) => {
                     account_created: createdUser.account_created,
                     account_updated: createdUser.account_updated
                 }
-                return setResponse(responseObj, 200, res)})
+                return setResponse(responseObj, 201, res)})
             .catch((error)=> setResponse(error, 400, res))
 
     } catch (error) {
@@ -132,6 +132,9 @@ export const update = async (req, res) => {
     try{
         const user = req.body
 
+        if(!user.first_name && !user.password && !user.last_name)
+            return setResponse({message: "Provide body to update"}, 400, res)
+
         if(req.currUser.id.toString()!==req.params.id)
             return setResponse({message: "You don't have access to this User account"}, 403, res)
 
@@ -161,7 +164,7 @@ export const update = async (req, res) => {
                     account_created: updatedUser.account_created,
                     account_updated: updatedUser.account_updated
                 }
-            return setResponse(responseObj, 200, res)
+            return setResponse(responseObj, 204, res)
             })
             .catch((error)=> setResponse(error, 400, res))
 
