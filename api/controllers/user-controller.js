@@ -1,13 +1,16 @@
 //search a particular to-do object
 import {setResponse} from "./index.js";
 import bcrypt from "bcrypt";
+
 import client from "../config/DBConnection.js";
 import db from "../models/index.js";
 const User = db.users
 
+
 //express app invokes the function to create new user
 export const create = async (req, res) => {
     try{
+
 
         //Check if User with the same email already exists
         const existingUser = await User.findOne({
@@ -49,7 +52,6 @@ export const create = async (req, res) => {
                 }
                 return setResponse(responseObj, 200, res)})
             .catch((error)=> setResponse(error, 400, res))
-
 
     } catch (error) {
         return setResponse(error, 400, res)
@@ -129,6 +131,7 @@ export const get = async (req, res) => {   //Search by id - auth required
 export const update = async (req, res) => {
     try{
         const user = req.body
+
         if(req.currUser.id.toString()!==req.params.id)
             return setResponse({message: "You don't have access to this User account"}, 403, res)
 
