@@ -22,26 +22,26 @@ export const userModel = (sequelize, Sequelize) => {
                 type: Sequelize.STRING,
                 required: true,
                 unique: {
-                    msg: 'Username should be unique',
+                    msg: 'Unique Username',
                     fields: ['username'],
                 },
                 allowNull: false,
                 validate: {
                     isEmail: {
                         args: true,
-                        msg: 'User name should be a valid email address!',
+                        msg: 'User name should be an email address!',
                     },
                 },
             },
             password: {
                 type: Sequelize.STRING,
                 required: true,
-                validate: {
-                    len: {
-                        args: [5, 500],
-                        msg: 'Password should be between 5 and 15 characters',
-                    },
-                },
+                // validate: {
+                //     len: {
+                //         args: [5, 500],
+                //         msg: 'Password should be between 5 and 15 characters',
+                //     },
+                // },
             },
             account_created: {
                 type: 'TIMESTAMP',
