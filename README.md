@@ -4,8 +4,9 @@
 ---
 
 ### What is this?
-Backend API to create a user (unauthorized route) and get and update a particular user (authorized route)
-The Database used is PostgreSQL
+Backend API  using Node and ExpressJS to create a user (unauthorized route) and get and update a particular user (authorized route).
+The Database used is PostgreSQL.
+I have used the IntelliJ IDE for development. 
 Base64 Authentication is implemented.
 
 ### Prerequisites
@@ -27,3 +28,11 @@ Base64 Authentication is implemented.
    ```shell
       npm run dev
     ```
+
+#### How to test?
+The test cases are written using Jest and Supertest. There are two test cases to test the health and invalid routes respectively.
+
+The command to run the tests is :
+   ```shell
+      npm run test
+   ```
