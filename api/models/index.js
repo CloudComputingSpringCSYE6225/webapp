@@ -2,6 +2,7 @@ import {dbEnvConfig} from "../config/config.js";
 import {Sequelize} from "sequelize";
 import {userModel} from "./User.js";
 import dotenv from "dotenv"
+import {productModel} from "./Product.js";
 dotenv.config()
 
 const env = process.env.NODE_ENV || 'development';
@@ -25,15 +26,13 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.users = userModel(sequelize, Sequelize);
+db.users = userModel(sequelize, Sequelize)
+db.products = productModel(sequelize, Sequelize)
 
-// db.connectionTest = async (req, res) => {
-//     try {
-//         await sequelize.authenticate()
-//         console.log(`Successfully connected to database "${dbConfig.DB}"`)
-//     } catch (error) {
-//         console.error(`Unable to connect to the database "${dbConfig.DB}":`, error)
-//     }
-// }
+//Association of user and product
+// db.users.hasMany(db.products)
+// db.products.belongsTo(db.users, {
+//     foreignKey: "owner_user_id"
+// })
 
 export default db

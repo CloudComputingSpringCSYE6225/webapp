@@ -8,7 +8,7 @@ dotenv.config()
 const PORT = process.env.PORT || 8080
 
 // db.connectionTest()
-db.sequelize.sync({ force: false })
+db.sequelize.sync({ alter: true })
     .then(() => console.log("Drop and Re-Sync db."))
     .catch((err) => console.log("Failed to sync db: " + err.message))
 
