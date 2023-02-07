@@ -8,6 +8,7 @@ const Product = db.products
 export const create = async (req, res) => {
     try{
         const product = req.body
+
         if(!product.name || !product.description || !product.sku || !product.manufacturer || !product.quantity)
             return setResponse({message: "Name, Description, SKU, Manufacturer and Quantity are mandatory fields"}, 400, res)
 
@@ -21,6 +22,7 @@ export const create = async (req, res) => {
         if(existingProduct)
             return setResponse({message: "Product with same SKU already exists"}, 400, res)
 
+
         //Check if Quantity is valid
         const {message, status} = checkQuantity(product.quantity)
         if(!status)
@@ -30,12 +32,14 @@ export const create = async (req, res) => {
 
         await Product.create(product)
             .then((createdProduct)=>{
+
                 return setResponse(createdProduct, 201, res)})
             .catch((error)=> setResponse(error, 400, res))
 
     } catch (error) {
         return setResponse(error, 400, res)
     }
+
 }
 
 export const get = async (req, res) => {   //Search by id - auth required
@@ -58,8 +62,10 @@ export const get = async (req, res) => {   //Search by id - auth required
 export const put = async (req, res) => {
     try{
         const product = req.body
+
         if(!product.name || !product.description || !product.sku || !product.manufacturer || !product.quantity)
             return setResponse({message: "Name, Description, SKU, Manufacturer and Quantity are mandatory fields"}, 400, res)
+
 
         const foundProduct = await Product.findOne({
             where: { id: req.params.id }
@@ -112,6 +118,7 @@ export const put = async (req, res) => {
             })
             .catch((error)=> setResponse(error, 400, res))
 
+
     } catch(error) {
         return setResponse(error, 400, res)
     }
@@ -144,10 +151,12 @@ export const patch = async (req, res) => {
         }
 
         if(product.quantity){
+
             //Check if quantity is valid
             const {message, status} = checkQuantity(product.quantity)
             if(!status)
                 return setResponse({message}, 400, res)
+
         }
 
         await Product.update(product, {
@@ -158,6 +167,7 @@ export const patch = async (req, res) => {
                 const updatedProduct = await Product.findOne({
                     where: { id: req.params.id }
                 }).catch((error)=>  setResponse(error, 400, res))
+
                 return setResponse(updatedProduct, 204, res)
             })
             .catch((error)=> setResponse(error, 400, res))
@@ -188,6 +198,7 @@ export const remove = async (req, res) => {
         return setResponse(error, 400, res)
     }
 }
+
 
 const checkQuantity = (quantity)=>{
     if (typeof quantity !== 'number')
