@@ -10,6 +10,11 @@ const User = db.users
 //express app invokes the function to create new user
 export const create = async (req, res) => {
     try{
+
+        const user = req.body
+        if(!user.first_name || !user.last_name || !user.username || !user.password)
+            return setResponse({message: "Username, Firstname, Lastname and Password are mandatory fields"}, 400, res)
+
         //Check if User with the same email already exists
         const existingUser = await User.findOne({
             where: {
@@ -20,9 +25,7 @@ export const create = async (req, res) => {
         if(existingUser)
             return setResponse({message: "Username already exists"}, 400, res)
 
-        const user = req.body
-        if(!user.first_name || !user.last_name || !user.username || !user.password)
-            return setResponse({message: "Username, Firstname, Lastname and Password are mandatory fields"}, 400, res)
+
         const validEmail = String(user.username)
             .toLowerCase()
             .match(
@@ -57,44 +60,44 @@ export const create = async (req, res) => {
 
 }
 
-export const login = async (req, res) => {
-    try{
-        const user = req.body
-        let existingPassword = ""
-        let validPassword = false
-        client.query(`Select password from users where username='${req.body.username}'`, async (err, result)=>{
-            try{
-                if(result.rows.length===0){
-                    console.log("No such user")
-                    return setResponse({message: "Please check username"}, 400, res)
-                }
-
-                existingPassword = result.rows[0].password
-                console.log("Existing Pwd: "+ existingPassword)
-                console.log("Body Pwd: "+ user.password)
-                validPassword = await bcrypt.compare(user.password, existingPassword);
-                console.log(validPassword)
-                if (!validPassword)
-                    return setResponse({message: "Password incorrect"}, 400, res)
-
-                //Obtain Base64 encoding
-                const concatString = user.username+":"+req.body.password;
-                console.log("concatString in login"+concatString)
-                const base64String = genBase64(concatString)
-                console.log("Base 64 on login of user: "+base64String)
-
-                return setResponse({base64: base64String}, 200, res)
-
-            }catch (error) {
-                return setResponse(error, 400, res)
-            }
-        });
-
-        client.end;
-    } catch (error) {
-        return setResponse(error, 400, res)
-    }
-}
+// export const login = async (req, res) => {
+//     try{
+//         const user = req.body
+//         let existingPassword = ""
+//         let validPassword = false
+//         client.query(`Select password from users where username='${req.body.username}'`, async (err, result)=>{
+//             try{
+//                 if(result.rows.length===0){
+//                     console.log("No such user")
+//                     return setResponse({message: "Please check username"}, 400, res)
+//                 }
+//
+//                 existingPassword = result.rows[0].password
+//                 console.log("Existing Pwd: "+ existingPassword)
+//                 console.log("Body Pwd: "+ user.password)
+//                 validPassword = await bcrypt.compare(user.password, existingPassword);
+//                 console.log(validPassword)
+//                 if (!validPassword)
+//                     return setResponse({message: "Password incorrect"}, 400, res)
+//
+//                 //Obtain Base64 encoding
+//                 const concatString = user.username+":"+req.body.password;
+//                 console.log("concatString in login"+concatString)
+//                 const base64String = genBase64(concatString)
+//                 console.log("Base 64 on login of user: "+base64String)
+//
+//                 return setResponse({base64: base64String}, 200, res)
+//
+//             }catch (error) {
+//                 return setResponse(error, 400, res)
+//             }
+//         });
+//
+//         client.end;
+//     } catch (error) {
+//         return setResponse(error, 400, res)
+//     }
+// }
 
 export const get = async (req, res) => {   //Search by id - auth required
     try{
@@ -171,10 +174,10 @@ export const update = async (req, res) => {
     }
 }
 
-const genBase64 = (concatString) => {
-    const bufferObj = Buffer.from(concatString, "utf8");
-
-    // Encode the Buffer as a base64 string
-    const base64String = bufferObj.toString("base64");
-    return base64String
-}
+// const genBase64 = (concatString) => {
+//     const bufferObj = Buffer.from(concatString, "utf8");
+//
+//     // Encode the Buffer as a base64 string
+//     const base64String = bufferObj.toString("base64");
+//     return base64String
+// }

@@ -14,7 +14,7 @@ Router.route("/:id")
     .put(basicAuth, userController.update)
 
 //login route
-Router.route("/login")
-    .post(userController.login)
+// Router.route("/login")
+//     .post(userController.login)
 
 export default Router;
