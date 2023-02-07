@@ -1,4 +1,4 @@
-//search a particular to-do object
+
 import {setResponse} from "./index.js";
 import bcrypt from "bcrypt";
 
@@ -10,8 +10,6 @@ const User = db.users
 //express app invokes the function to create new user
 export const create = async (req, res) => {
     try{
-
-
         //Check if User with the same email already exists
         const existingUser = await User.findOne({
             where: {
