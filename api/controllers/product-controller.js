@@ -22,6 +22,8 @@ export const create = async (req, res) => {
         if(existingProduct)
             return setResponse({message: "Product with same SKU already exists"}, 400, res)
 
+        if(product.date_added || product.date_last_updated || product.id || product.owner_user_id)
+            return setResponse({message: "ID, Owner User Id, Date added and updated are read only fields"}, 400, res)
 
         //Check if Quantity is valid
         const {message, status} = checkQuantity(product.quantity)
@@ -66,7 +68,6 @@ export const put = async (req, res) => {
         if(!product.name || !product.description || !product.sku || !product.manufacturer || !product.quantity)
             return setResponse({message: "Name, Description, SKU, Manufacturer and Quantity are mandatory fields"}, 400, res)
 
-
         const foundProduct = await Product.findOne({
             where: { id: req.params.id }
         })
@@ -77,6 +78,9 @@ export const put = async (req, res) => {
 
         if(foundProduct.owner_user_id!==req.currUser.id)
             return setResponse({message: "You don't have access to this Product"}, 403, res)
+
+        if(product.date_added || product.date_last_updated || product.id || product.owner_user_id)
+            return setResponse({message: "ID, Owner User Id, Date added and updated are read only fields"}, 400, res)
 
         const existingProduct = await Product.findOne({
             where: {
@@ -150,13 +154,14 @@ export const patch = async (req, res) => {
                 return setResponse({message: "Product with same SKU already exists"}, 400, res)
         }
 
-        if(product.quantity){
+        if(product.date_added || product.date_last_updated || product.id || product.owner_user_id)
+            return setResponse({message: "ID, Owner User Id, Date added and updated are read only fields"}, 400, res)
 
+        if(product.quantity){
             //Check if quantity is valid
             const {message, status} = checkQuantity(product.quantity)
             if(!status)
                 return setResponse({message}, 400, res)
-
         }
 
         await Product.update(product, {
