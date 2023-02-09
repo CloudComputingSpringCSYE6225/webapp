@@ -11,19 +11,19 @@ Base64 Authentication is implemented.
 
 #### Routes
 > User Routes
-- `**GET** v1/user/{userId}` Get User Account Information
-- `**PUT** v1/user/{userId}` Update User's account information
-- `**POST** v1/user` Creates a user account (unauthenticated)
+- `GET v1/user/{userId}` Get User Account Information
+- `PUT v1/user/{userId}` Update User's account information
+- `POST v1/user` Creates a user account (unauthenticated)
 
 > Product Routes
-- `**GET** v1/product/{productId}` Get Product Information (unauthenticated)
-- `**POST** v1/product` Add new product
-- `**PUT** v1/product/{productId}` Update Product information
-- `**PATCH** v1/product/{productId}` Update Product information
-- `**DELETE** v1/product/{productId}` Delete Product information
+- `GET v1/product/{productId}` Get Product Information (unauthenticated)
+- `POST v1/product` Add new product
+- `PUT v1/product/{productId}` Update Product information
+- `PATCH v1/product/{productId}` Update Product information
+- `DELETE v1/product/{productId}` Delete Product information
 
 > Health Route
-- `**GET** /healthz` Health endpoint
+- `GET /healthz` Health endpoint
 
 ### Prerequisites
 - `git` (configured with ssh) [[link](https://git-scm.com/downloads)]
