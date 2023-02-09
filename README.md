@@ -3,11 +3,27 @@
 ## <ins>By Rebecca Biju : 002768633</ins>
 ---
 
-### What is this?
-Backend API  using Node and ExpressJS to create a user (unauthorized route) and get and update a particular user (authorized route).
+### About
+Backend API using Node and ExpressJS to perform CRUD operations on users and products.
 The Database used is PostgreSQL.
 I have used the IntelliJ IDE for development. 
 Base64 Authentication is implemented.
+
+#### Routes
+> User Routes
+- `**GET** v1/user/{userId}` Get User Account Information
+- `**PUT** v1/user/{userId}` Update User's account information
+- `**POST** v1/user` Creates a user account (unauthenticated)
+
+> Product Routes
+- `**GET** v1/product/{productId}` Get Product Information (unauthenticated)
+- `**POST** v1/product` Add new product
+- `**PUT** v1/product/{productId}` Update Product information
+- `**PATCH** v1/product/{productId}` Update Product information
+- `**DELETE** v1/product/{productId}` Delete Product information
+
+> Health Route
+- `**GET** /healthz` Health endpoint
 
 ### Prerequisites
 - `git` (configured with ssh) [[link](https://git-scm.com/downloads)]
