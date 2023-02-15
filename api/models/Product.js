@@ -11,25 +11,25 @@ export const productModel = (sequelize, Sequelize) => {
             name: {
                 type: Sequelize.STRING,
                 required: true,
-                allowNull: true,
+                allowNull: false,
                 defaultValue: null
             },
             description: {
                 type: Sequelize.STRING,
                 required: true,
-                allowNull: true,
+                allowNull: false,
                 defaultValue: null
             },
             sku: {
                 type: Sequelize.STRING,
                 required: true,
                 unique: true,
-                allowNull: true,
+                allowNull: false,
             },
             manufacturer: {
                 type: Sequelize.STRING,
                 required: true,
-                allowNull: true,
+                allowNull: false,
                 defaultValue: null
             },
             quantity: {
