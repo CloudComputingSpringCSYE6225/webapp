@@ -12,6 +12,6 @@ describe('Invalid Endpoint', () => {
 describe("GET Health Endpoint", () => {
     test("Check health on /healthz", async () => {
         const res = await request(app).get("/healthz");
-        expect(res.statusCode).toEqual(400);
+        expect(res.statusCode).toEqual(200);
     });
 });
