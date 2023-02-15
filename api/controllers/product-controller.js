@@ -45,11 +45,14 @@ export const create = async (req, res) => {
 }
 
 export const get = async (req, res) => {   //Search by id - auth required
+    let hasError = false
     try{
         const foundProduct = await Product.findOne({
             where: { id: req.params.id }
         })
-            .catch((error)=>  setResponse(error, 400, res))
+            .catch((error)=>  {
+                hasError = true
+                return setResponse(error, 400, res)})
 
         if(!foundProduct)
             return setResponse({message: "No such Product. Please check id"}, 404, res)
@@ -57,11 +60,13 @@ export const get = async (req, res) => {   //Search by id - auth required
         return setResponse(foundProduct, 200, res)
 
     } catch (error){
-        return setResponse(error, 400, res)
+        if(!hasError)
+            return setResponse(error, 400, res)
     }
 }
 
 export const put = async (req, res) => {
+    let hasError = false
     try{
         const product = req.body
 
@@ -71,7 +76,9 @@ export const put = async (req, res) => {
         const foundProduct = await Product.findOne({
             where: { id: req.params.id }
         })
-            .catch((error)=>  setResponse(error, 400, res))
+            .catch((error)=>  {
+                hasError = true
+                return setResponse(error, 400, res)})
 
         if(!foundProduct)
             return setResponse({message: "No such Product. Please check id"}, 404, res)
@@ -124,16 +131,20 @@ export const put = async (req, res) => {
 
 
     } catch(error) {
-        return setResponse(error, 400, res)
+        if(!hasError)
+            return setResponse(error, 400, res)
     }
 }
 
 export const patch = async (req, res) => {
+    let hasError = false
     try{
         const foundProduct = await Product.findOne({
             where: { id: req.params.id }
         })
-            .catch((error)=>  setResponse(error, 400, res))
+            .catch((error)=> {
+                hasError = true
+                return setResponse(error, 400, res)})
 
         if(!foundProduct)
             return setResponse({message: "No such Product. Please check id"}, 404, res)
@@ -178,16 +189,20 @@ export const patch = async (req, res) => {
             .catch((error)=> setResponse(error, 400, res))
 
     } catch(error) {
-        return setResponse(error, 400, res)
+        if(!hasError)
+            return setResponse(error, 400, res)
     }
 }
 
 export const remove = async (req, res) => {
+    let hasError = false
     try{
         const foundProduct = await Product.findOne({
             where: { id: req.params.id }
         })
-            .catch((error)=>  setResponse(error, 400, res))
+            .catch((error)=>  {
+                hasError = true
+                return setResponse(error, 400, res)})
 
         if(!foundProduct)
             return setResponse({message: "No such Product. Please check id"}, 404, res)
@@ -200,7 +215,8 @@ export const remove = async (req, res) => {
             .catch((error)=>  setResponse(error, 400, res))
 
     }catch(error) {
-        return setResponse(error, 400, res)
+        if(!hasError)
+            return setResponse(error, 400, res)
     }
 }
 
