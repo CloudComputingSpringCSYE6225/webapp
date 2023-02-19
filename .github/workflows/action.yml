@@ -18,3 +18,29 @@ jobs:
       - run: npm i
       - run: npm run build --if-present
       - run: npm test
+  check_format:
+    runs-on: ubuntu-latest
+    env:
+      PKR_VAR_POSTGRES_USER: ${{ secrets.DB_USER }}
+      PKR_VAR_POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      PKR_VAR_POSTGRES_HOST: ${{ secrets.DB_HOST }}
+      PKR_VAR_POSTGRES_PORT: ${{ secrets.DB_PORT }}
+      PKR_VAR_POSTGRES_DB: ${{ secrets.DB_DATABASE }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install Packer
+        run: sudo apt-get update && sudo apt-get install -y packer
+      - name: Check Packer file format
+        run: |
+          if ! packer fmt -check packer; then
+            echo "Packer format is not correct. Please run 'packer fmt' to fix the issue."
+            exit 1
+          fi
+      - name: Check Packer file valid
+        run: |
+          packer init packer
+          if ! packer validate packer; then
+            echo "Packer files are not valid."
+            exit 1
+          fi
