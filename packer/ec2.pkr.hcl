@@ -99,12 +99,12 @@ build {
   ]
 
   provisioner "file" {
-    source      = "../../webapp"
+    source      = "../webapp"
     destination = "/home/ec2-user/webapp"
   }
 
   provisioner "shell" {
-    script           = "provision.sh"
+    script           = "packer/provision.sh"
     environment_vars = ["POSTGRES_USER=${var.POSTGRES_USER}", "POSTGRES_PASSWORD=${var.POSTGRES_PASSWORD}", "POSTGRES_HOST=${var.POSTGRES_HOST}", "POSTGRES_PORT=${var.POSTGRES_PORT}", "POSTGRES_DB=${var.POSTGRES_DB}"]
   }
 }
