@@ -31,7 +31,8 @@ Base64 Authentication is implemented.
 - `Postman` for API testing [[link](https://www.postman.com/downloads/)]
 - `env` file for local Postgres step
 
-#### How to run?
+
+#### How to run? (WebApp)
 1. Clone the repository from Organization
     ```shell
       git clone git@github.com:CloudComputingSpringCSYE6225/webapp.git
@@ -45,10 +46,33 @@ Base64 Authentication is implemented.
       npm run dev
     ```
 
-#### How to test?
+#### How to test? (WebApp)
 The test cases are written using Jest and Supertest. There are two test cases to test the health and invalid routes respectively.
 
 The command to run the tests is :
    ```shell
       npm run test
    ```
+
+#### How to build AMI using Packer
+1. Go to the packer folder
+   ```shell
+      cd packer
+    ```
+2. Initialize packer
+   ```shell
+      packer init .
+    ```
+3. Validate Packer
+   ```shell
+      packer validate .
+    ```
+4. Format Packer files
+   ```shell
+      packer fmt
+    ```
+5. Build Packer
+   ```shell
+      packer build ec2.pkr.hcl
+    ```
+Note : If you want you can add a variables.auto.pkvars.hcl file if you want to provide custom variables other than the default values provided. Additionally, You can `source .venv` which exports the DB Environment variables and the packer IAM user access keys
