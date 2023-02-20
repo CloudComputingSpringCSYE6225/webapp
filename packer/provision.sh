@@ -24,12 +24,12 @@ sudo yum install postgresql14 postgresql14-server -y
 
 
 
-# export variables
-export POSTGRES_USER=${POSTGRES_USER}
-export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-export POSTGRES_DB=${POSTGRES_DB}
-export POSTGRES_PORT=${POSTGRES_PORT}
-export POSTGRES_HOST=${POSTGRES_HOST}
+# export variables . DB_* is the name used in my webapp api
+export DB_USER=${POSTGRES_USER}
+export DB_PASSWORD=${POSTGRES_PASSWORD}
+export DB_DATABASE=${POSTGRES_DB}
+export DB_PORT=${POSTGRES_PORT}
+export DB_HOST=${POSTGRES_HOST}
 
 # Create postgres user
 sudo postgresql-14-setup initdb
