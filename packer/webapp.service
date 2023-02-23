@@ -2,7 +2,7 @@
 Description= Webapp
 
 [Service]
-ExecStart=/usr/bin/npm run dev
+ExecStart=/usr/bin/node server.js
 Restart=always
 User=ec2-user
 WorkingDirectory=/home/ec2-user/webapp
