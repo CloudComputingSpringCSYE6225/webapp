@@ -32,6 +32,13 @@ sudo sh -c 'echo "export DB_DATABASE='${POSTGRES_DB}'" >> /etc/profile'
 sudo sh -c 'echo "export DB_PORT='${POSTGRES_PORT}'" >> /etc/profile'
 sudo sh -c 'echo "export DB_HOST='${POSTGRES_HOST}'" >> /etc/profile'
 
+touch /home/ec2-user/webapp/.env
+echo "DB_USER='${POSTGRES_USER}'" >> /home/ec2-user/webapp/.env
+echo "DB_PASSWORD='${POSTGRES_PASSWORD}'" >> /home/ec2-user/webapp/.env
+echo "DB_DATABASE='${POSTGRES_DB}'" >> /home/ec2-user/webapp/.env
+echo "DB_PORT='${POSTGRES_PORT}'" >> /home/ec2-user/webapp/.env
+echo "DB_HOST='${POSTGRES_HOST}'" >> /home/ec2-user/webapp/.env
+
 # Create postgres user
 sudo postgresql-14-setup initdb
 sudo systemctl enable --now postgresql-14
