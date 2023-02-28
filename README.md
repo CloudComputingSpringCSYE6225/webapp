@@ -3,7 +3,7 @@
 ## <ins>By Rebecca Biju : 002768633</ins>
 ---
 
-### About
+## About
 Backend API using Node and ExpressJS to perform CRUD operations on users and products.
 The Database used is PostgreSQL.
 I have used the IntelliJ IDE for development. 
