@@ -3,6 +3,7 @@ import {Sequelize} from "sequelize";
 import {userModel} from "./User.js";
 import dotenv from "dotenv"
 import {productModel} from "./Product.js";
+import { imageModel } from "./Image.js";
 dotenv.config()
 
 const env = process.env.NODE_ENV || 'development';
@@ -28,6 +29,7 @@ db.sequelize = sequelize;
 
 db.users = userModel(sequelize, Sequelize)
 db.products = productModel(sequelize, Sequelize)
+db.images = imageModel(sequelize, Sequelize)
 
 //Association of user and product
 // db.users.hasMany(db.products)

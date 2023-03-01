@@ -29,6 +29,10 @@ export const create = async (req, res) => {
         const {message, status} = checkQuantity(product.quantity)
         if(!status)
             return setResponse({message}, 400, res)
+        
+        //Check if Manufacturer is a string
+        if(typeof product.manufacturer!=="string")
+            return setResponse({message: "Manufacturer should be a string"}, 400, res)
 
         product.owner_user_id = req.currUser.id
 
@@ -103,6 +107,10 @@ export const put = async (req, res) => {
         if(!status)
             return setResponse({message}, 400, res)
 
+        //Check if Manufacturer is a string
+        if(typeof product.manufacturer!=="string")
+            return setResponse({message: "Manufacturer should be a string"}, 400, res)
+
         product.owner_user_id = req.currUser.id;
 
         await Product.update(product, {
@@ -173,6 +181,11 @@ export const patch = async (req, res) => {
             const {message, status} = checkQuantity(product.quantity)
             if(!status)
                 return setResponse({message}, 400, res)
+        }
+
+        if(product.manufacturer){
+            if(typeof product.manufacturer!=="string")
+                return setResponse({message: "Manufacturer should be a string"}, 400, res)
         }
 
         await Product.update(product, {

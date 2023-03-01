@@ -52,26 +52,6 @@ variable "ami_environment" {
   default = "dev"
 }
 
-variable "POSTGRES_USER" {
-  type = string
-}
-
-variable "POSTGRES_PASSWORD" {
-  type = string
-}
-
-
-variable "POSTGRES_HOST" {
-  type = string
-}
-
-variable "POSTGRES_PORT" {
-  type = string
-}
-
-variable "POSTGRES_DB" {
-  type = string
-}
 
 source "amazon-ebs" "webapp-ami" {
   ami_name      = var.ami_name
@@ -104,7 +84,6 @@ build {
   }
 
   provisioner "shell" {
-    script           = "packer/provision.sh"
-    environment_vars = ["POSTGRES_USER=${var.POSTGRES_USER}", "POSTGRES_PASSWORD=${var.POSTGRES_PASSWORD}", "POSTGRES_HOST=${var.POSTGRES_HOST}", "POSTGRES_PORT=${var.POSTGRES_PORT}", "POSTGRES_DB=${var.POSTGRES_DB}"]
+    script = "packer/provision.sh"
   }
 }

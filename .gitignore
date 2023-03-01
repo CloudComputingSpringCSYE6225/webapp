@@ -109,3 +109,6 @@ package-lock.json
 .DS_Store
 .venv
 *.pkrvars.hcl
+
+uploads/*
+!uploads/.keep
