@@ -20,38 +20,25 @@ enabled=1
 gpgcheck=0
 EOF
 sudo yum makecache
-sudo yum install postgresql14 postgresql14-server -y
+sudo yum install postgresql14 -y
 
 
 
 # export variables . DB_* is the name used in my webapp api
 
-sudo sh -c 'echo "export DB_USER='${POSTGRES_USER}'" >> /etc/profile'
-sudo sh -c 'echo "export DB_PASSWORD='${POSTGRES_PASSWORD}'" >> /etc/profile'
-sudo sh -c 'echo "export DB_DATABASE='${POSTGRES_DB}'" >> /etc/profile'
-sudo sh -c 'echo "export DB_PORT='${POSTGRES_PORT}'" >> /etc/profile'
-sudo sh -c 'echo "export DB_HOST='${POSTGRES_HOST}'" >> /etc/profile'
+#sudo sh -c 'echo "export DB_USER='${POSTGRES_USER}'" >> /etc/profile'
+#sudo sh -c 'echo "export DB_PASSWORD='${POSTGRES_PASSWORD}'" >> /etc/profile'
+#sudo sh -c 'echo "export DB_DATABASE='${POSTGRES_DB}'" >> /etc/profile'
+#sudo sh -c 'echo "export DB_PORT='${POSTGRES_PORT}'" >> /etc/profile'
+#sudo sh -c 'echo "export DB_HOST='${POSTGRES_HOST}'" >> /etc/profile'
+#
+#touch /home/ec2-user/webapp/.env
+#echo "DB_USER='${POSTGRES_USER}'" >> /home/ec2-user/webapp/.env
+#echo "DB_PASSWORD='${POSTGRES_PASSWORD}'" >> /home/ec2-user/webapp/.env
+#echo "DB_DATABASE='${POSTGRES_DB}'" >> /home/ec2-user/webapp/.env
+#echo "DB_PORT='${POSTGRES_PORT}'" >> /home/ec2-user/webapp/.env
+#echo "DB_HOST='${POSTGRES_HOST}'" >> /home/ec2-user/webapp/.env
 
-touch /home/ec2-user/webapp/.env
-echo "DB_USER='${POSTGRES_USER}'" >> /home/ec2-user/webapp/.env
-echo "DB_PASSWORD='${POSTGRES_PASSWORD}'" >> /home/ec2-user/webapp/.env
-echo "DB_DATABASE='${POSTGRES_DB}'" >> /home/ec2-user/webapp/.env
-echo "DB_PORT='${POSTGRES_PORT}'" >> /home/ec2-user/webapp/.env
-echo "DB_HOST='${POSTGRES_HOST}'" >> /home/ec2-user/webapp/.env
-
-# Create postgres user
-sudo postgresql-14-setup initdb
-sudo systemctl enable --now postgresql-14
-sudo su - postgres <<EOF
-psql -c "CREATE database ${POSTGRES_DB}"
-psql -c "CREATE USER ${POSTGRES_USER} WITH PASSWORD '${POSTGRES_PASSWORD}';"
-psql -c "GRANT ALL PRIVILEGES ON DATABASE ${POSTGRES_DB} TO ${POSTGRES_USER};"
-psql -c "\du"
-EOF
-
-#To make postgres take password for login and not raise Ident issue
-sudo sed -i 's/\(scram-sha-256\|ident\|peer\)/md5/g' /var/lib/pgsql/14/data/pg_hba.conf
-sudo systemctl restart postgresql-14
 
 
 cd /home/ec2-user/webapp
