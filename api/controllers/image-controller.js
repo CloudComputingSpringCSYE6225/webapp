@@ -56,7 +56,7 @@ export const create = async (req, res) => {
         // Upload the image to S3
         let og_file_name = (req.file.originalname).replace(/\s/g, '')
         const params = {
-            Bucket: 'rebdev-bucket',
+            Bucket: process.env.AWS_BUCKET_NAME,
             Key: `${req.params.pid}/${createdImageId}/${og_file_name}`,
             Body: fileStream,
             ContentType: req.file.mimetype
