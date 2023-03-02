@@ -22,6 +22,12 @@ Base64 Authentication is implemented.
 - `PATCH v1/product/{productId}` Update Product information
 - `DELETE v1/product/{productId}` Delete Product information
 
+> Image Routes
+- `GET v1/product/{productId}/image` Get List of All Images Uploaded
+- `POST v1/product/{productId}/image` Upload an image
+- `GET v1/product/{productId}/image/{imageId}` Get Image Details
+- `DELETE v1/product/{productId}/image/{imageId}` Delete the Image
+
 > Health Route
 - `GET /healthz` Health endpoint
 
