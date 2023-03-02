@@ -187,7 +187,7 @@ export const remove = async (req, res) => {
             return setResponse({message: "No such Image. Please check id"}, 404, res)
 
         const params = {
-            Bucket: 'rebdev-bucket',
+            Bucket: process.env.AWS_BUCKET_NAME,
             Key: foundImage.s3_bucket_path,
         };
         await s3.deleteObject(params).promise()
