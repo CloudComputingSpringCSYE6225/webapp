@@ -81,4 +81,4 @@ The command to run the tests is :
    ```shell
       packer build ec2.pkr.hcl
     ```
-Note : If you want you can add a variables.auto.pkvars.hcl file if you want to provide custom variables other than the default values provided. Additionally, You can `source .venv` which exports the DB Environment variables and the packer IAM user access keys.
+Note : If you want you can add a variables.auto.pkvars.hcl file if you want to provide custom variables other than the default values provided. Additionally, You can `source .venv` which exports the DB Environment variables and the packer IAM user access keys
