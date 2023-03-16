@@ -186,6 +186,9 @@ export const remove = async (req, res) => {
         if(!foundImage)
             return setResponse({message: "No such Image. Please check id"}, 404, res)
 
+        if(foundImage.product_id!==foundProduct.id)
+            return setResponse({message: "Image not associated with the product"}, 404, res)
+
         const params = {
             Bucket: process.env.AWS_BUCKET_NAME,
             Key: foundImage.s3_bucket_path,
