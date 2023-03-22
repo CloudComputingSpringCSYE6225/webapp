@@ -1,6 +1,4 @@
 import {setResponse} from "../controllers/index.js";
-
-import client from "../config/DBConnection.js";
 import bcrypt from "bcrypt";
 import db from "../models/index.js";
 const User = db.users
@@ -8,7 +6,7 @@ const User = db.users
 export const basicAuth = async (req, res, next) => {
     // If 'Authorization' header not present
     if(!req.headers.authorization || req.headers.authorization.indexOf('Basic ') === -1){
-        return setResponse({message: "Missing Authorization Header"}, 401, res)
+        return setResponse({message: "Missing Authorization Header"}, 401, res, "warn")
     } else {
         // Decode the 'Authorization' header Base64 value
         const [username, password] = Buffer.from(req.get('Authorization').split(' ')[1], 'base64')
@@ -24,14 +22,14 @@ export const basicAuth = async (req, res, next) => {
         const foundUser = await User.findOne({
                 where: {username},
             })
-            .catch((error)=>  setResponse(error, 400, res))
+            .catch((error)=>  setResponse(error, 400, res, "error"))
 
         if(!foundUser)
-            return setResponse({message: "Please check username. Authorization in Middleware failed"}, 401, res)
+            return setResponse({message: "Please check username. Authorization in Middleware failed"}, 401, res, "warn")
 
         const validPassword = await bcrypt.compare(password, foundUser.password);
         if (!validPassword)
-            return setResponse({message: "Password incorrect. Authorization in Middleware failed"}, 401, res)
+            return setResponse({message: "Password incorrect. Authorization in Middleware failed"}, 401, res, "warn")
 
         console.log("Middleware found User"+ typeof foundUser.id)
         req.currUser = {
