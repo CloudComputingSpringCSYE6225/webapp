@@ -9,6 +9,7 @@ Router.route("/")
     .get(
         (req, res) => {
             try{
+                console.log(process.env.USE_PROFILE)
                 if(!process.env.USE_PROFILE)
                     client.increment("Health")
                 logger.info(`Health point hit`)
