@@ -26,7 +26,6 @@ jobs:
       PKR_VAR_POSTGRES_HOST: ${{ secrets.DB_HOST }}
       PKR_VAR_POSTGRES_PORT: ${{ secrets.DB_PORT }}
       PKR_VAR_POSTGRES_DB: ${{ secrets.DB_DATABASE }}
-      USE_PROFILE: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
