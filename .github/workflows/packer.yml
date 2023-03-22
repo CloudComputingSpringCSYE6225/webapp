@@ -9,6 +9,8 @@ on:
 jobs:
   merge:
     runs-on: ubuntu-latest
+    env:
+      USE_PROFILE: true
     strategy:
       matrix:
         node-version: [ 19.x ]

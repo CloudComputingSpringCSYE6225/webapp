@@ -11,7 +11,7 @@ sudo yum install -y nodejs
 
 
 sudo amazon-linux-extras install epel -y
-sudo yum -y install gcc openssl-devel bzip2-devel libffi-devel zlib-devel
+sudo yum -y install gcc openssl-devel bzip2-devel libffi-devel zlib-devel amazon-cloudwatch-agent
 sudo tee /etc/yum.repos.d/pgdg.repo<<EOF
 [pgdg14]
 name=PostgreSQL 14 for RHEL/CentOS 7 - x86_64
@@ -67,3 +67,6 @@ sudo cp packer/nginx.conf /etc/nginx/
 sudo systemctl restart nginx
 sudo systemctl reload nginx
 
+#Install cloudwatch
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file://home/ec2-user/webapp/packer/cloudwatch-config.json -s
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a start

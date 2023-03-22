@@ -1,38 +1,53 @@
 
 import {setResponse} from "./index.js";
 import bcrypt from "bcrypt";
-
-import client from "../config/DBConnection.js";
 import db from "../models/index.js";
+import {logger} from "../config/logConfig.js";
+import {client} from "../config/cloudWatch.js";
 const User = db.users
 
 
 //express app invokes the function to create new user
 export const create = async (req, res) => {
+    let hasError = false
     try{
+        client.increment("Create_User")
+        const { protocol, method, hostname, originalUrl } = req
+        logger.info(`Hitting Endpoint -  ${method} ${protocol}://${hostname}${originalUrl}`)
+        logger.info(`Checking if all mandatory fields are present`)
 
         const user = req.body
-        if(!user.first_name || !user.last_name || !user.username || !user.password)
-            return setResponse({message: "Username, Firstname, Lastname and Password are mandatory fields"}, 400, res)
-
+        let error=""
+        if(!user.first_name || !user.last_name || !user.username || !user.password){
+            error = "Username, Firstname, Lastname and Password are mandatory fields"
+            // logger.warn("Mandatory fields not entered.")
+            return setResponse({message: error}, 400, res, "warn")
+        }
+            
         //Check if User with the same email already exists
+        logger.info(`Checking if user with ${user.username} exists`)
         const existingUser = await User.findOne({
             where: {
                 username: req.body.username,
             },
-        }).catch((error)=>  setResponse(error, 400, res))
+        }).catch((error)=>  {
+            hasError = true
+            return setResponse(error, 400, res, "error")})
 
-        if(existingUser)
-            return setResponse({message: "Username already exists"}, 400, res)
-
+        if(existingUser){
+            // logger.warn("User already Exists")
+            return setResponse({message: "Username already exists"}, 400, res, "warn")
+        }
 
         const validEmail = String(user.username)
             .toLowerCase()
             .match(
                 /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             )
-        if(!validEmail)
-            return setResponse({message: "Username should be an Email ID"}, 400, res)
+        if(!validEmail){
+            // logger.warn(`Username should be a valid Email ID`)
+            return setResponse({message: "Username should be an Email ID"}, 400, res, "warn")
+        }
 
         const salt = await bcrypt.genSalt()
         user.password = await bcrypt.hash(user.password, salt)
@@ -41,6 +56,7 @@ export const create = async (req, res) => {
         // if(user.account_created || user.account_updated || user.id)
         //     return setResponse({message: "ID, Account created and updated are read only fields"}, 400, res)
 
+        logger.info(`All checks passed. Creating user now`)
         await User.create(user)
             .then((createdUser)=>{
                 const responseObj = {
@@ -51,11 +67,16 @@ export const create = async (req, res) => {
                     account_created: createdUser.account_created,
                     account_updated: createdUser.account_updated
                 }
+                logger.info(`User creation successful`)
                 return setResponse(responseObj, 201, res)})
-            .catch((error)=> setResponse(error, 400, res))
+            .catch((error)=>  {
+                hasError = true
+                return setResponse(error, 400, res, "error")})
 
     } catch (error) {
-        return setResponse(error, 400, res)
+        // logger.error(`Something went wrong. \n ${error}`)
+        if(!hasError)
+            return setResponse(error, 400, res, "error")
     }
 
 }
@@ -100,18 +121,29 @@ export const create = async (req, res) => {
 // }
 
 export const get = async (req, res) => {   //Search by id - auth required
+    let hasError = false
     try{
-        //convert ID of currUser obtained from Middleware to a string because req.params.id is of type String
-        if(req.currUser.id.toString()!==req.params.id)
-            return setResponse({message: "You don't have access to this User account"}, 403, res)
+        client.increment("Get_User_Details")
+        const { protocol, method, hostname, originalUrl } = req
+        logger.info(`Hitting Endpoint -  ${method} ${protocol}://${hostname}${originalUrl}`)
 
+        //convert ID of currUser obtained from Middleware to a string because req.params.id is of type String
+        if(req.currUser.id.toString()!==req.params.id){
+            return setResponse({message: "You don't have access to this User account"}, 403, res, "warn")
+        }
+
+        logger.info(`Checking if user exists`)
         const foundUser = await User.findOne({
                 where: { id: req.params.id }
             })
-            .catch((error)=>  setResponse(error, 400, res))
+            .catch((error)=>  {
+                hasError = true
+                return setResponse(error, 400, res, "error")})
 
-        if(!foundUser)
-            return setResponse({message: "No such user. Please check id"}, 400, res)
+        if(!foundUser){
+            // logger.warn(`User does not exist`)
+            return setResponse({message: "No such user. Please check id"}, 400, res, "warn")
+        }
 
         const responseObj = {
             id: foundUser.id,
@@ -121,29 +153,61 @@ export const get = async (req, res) => {   //Search by id - auth required
             account_created: foundUser.account_created,
             account_updated: foundUser.account_updated
         }
+        logger.info(`User found. Returning object`)
         return setResponse(responseObj, 200, res)
 
     } catch (error){
-        return setResponse(error, 400, res)
+        // logger.error(`Something went wrong. \n ${error}`)
+        if(!hasError)
+            return setResponse(error, 400, res, "error")
     }
 }
 
 //Update user info - auth required
 export const update = async (req, res) => {
+    let hasError = false
     try{
+        client.increment("Update_User")
+        const { protocol, method, hostname, originalUrl } = req
+        logger.info(`Hitting Endpoint -  ${method} ${protocol}://${hostname}${originalUrl}`)
+
         const user = req.body
 
-        if(!user.first_name && !user.password && !user.last_name)
-            return setResponse({message: "Provide body to update"}, 400, res)
+        logger.info(`Checking mandatory fields`)
+        if(!user.first_name && !user.password && !user.last_name){
+            // logger.warn(`Body missing`)
+            return setResponse({message: "Provide body to update"}, 400, res, "warn")
+        }
 
-        if(req.currUser.id.toString()!==req.params.id)
-            return setResponse({message: "You don't have access to this User account"}, 403, res)
+        logger.info(`Checking if user exists`)
+        const foundUser = await User.findOne({
+            where: { id: req.params.id }
+        })
+            .catch((error)=>  {
+                hasError = true
+                return setResponse(error, 400, res, "error")})
 
-        if(user.username)
-            return setResponse({message: "Username cannot be updated"}, 400, res)
+        if(!foundUser){
+            // logger.warn(`User does not exist`)
+            return setResponse({message: "No such user. Please check id"}, 400, res, "warn")
+        }
 
-        if(user.account_created || user.account_updated || user.id)
-            return setResponse({message: "ID, Account created and updated are read only fields"}, 400, res)
+        logger.info(`Checking if user is authorized`)
+        if(req.currUser.id.toString()!==req.params.id) {
+            // logger.warn(`You don't have access to this User account`)
+            return setResponse({message: "You don't have access to this User account"}, 403, res, "warn")
+        }
+
+        logger.info(`Body validation`)
+        if(user.username) {
+            // logger.warn(`Username provided in the body. Not valid`)
+            return setResponse({message: "Username cannot be updated"}, 400, res, "warn")
+        }
+
+        if(user.account_created || user.account_updated || user.id) {
+            // logger.warn(`Invalid body provided for updation`)
+            return setResponse({message: "ID, Account created and updated are read only fields"}, 400, res, "warn")
+        }
 
         const salt = await bcrypt.genSalt()
         user.password = await bcrypt.hash(user.password, salt)
@@ -155,7 +219,9 @@ export const update = async (req, res) => {
             .then(async ()=>{
                 const updatedUser = await User.findOne({
                     where: { id: req.params.id }
-                }).catch((error)=>  setResponse(error, 400, res))
+                }).catch((error)=>  {
+                    hasError = true
+                    return setResponse(error, 400, res, "error")})
 
                 const responseObj = {
                     id: updatedUser.id,
@@ -165,12 +231,17 @@ export const update = async (req, res) => {
                     account_created: updatedUser.account_created,
                     account_updated: updatedUser.account_updated
                 }
-            return setResponse(responseObj, 204, res)
+                logger.info(`User successfully updated`)
+                return setResponse(responseObj, 204, res)
             })
-            .catch((error)=> setResponse(error, 400, res))
+            .catch((error)=>  {
+                hasError = true
+                return setResponse(error, 400, res, "error")})
 
     } catch(error) {
-        return setResponse(error, 400, res)
+        // logger.error(`Something went wrong. \n ${error}`)
+        if(!hasError)
+            return setResponse(error, 400, res, "error")
     }
 }
 

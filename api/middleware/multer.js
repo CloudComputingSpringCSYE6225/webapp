@@ -34,7 +34,7 @@ export const uploadFile = function (req, res, next) {
         // else
         if (err) {
             // An unknown error occurred when uploading.
-            return setResponse({message: err.message}, 400, res)
+            return setResponse({message: err.message}, 400, res, "warn")
         }
         next()
     })
