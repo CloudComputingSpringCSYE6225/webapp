@@ -172,6 +172,9 @@ export const get = async (req, res) => {
         if(!foundImage)
             return setResponse({message: "No such Image. Please check id"}, 404, res, "warn")
 
+        if(foundImage.product_id!==foundProduct.id)
+            return setResponse({message: "Image not associated with the product"}, 404, res, "warn")
+
         logger.info(`Image found`)
         return setResponse(foundImage, 200, res)
 

@@ -4,7 +4,9 @@ import {setResponse} from "./index.js";
 import db from "../models/index.js";
 import {logger} from "../config/logConfig.js";
 import {client} from "../config/cloudWatch.js";
+import {s3} from "../config/s3Config.js";
 const Product = db.products
+const Image = db.images
 
 //express app invokes the function to create new product
 export const create = async (req, res) => {
@@ -283,6 +285,36 @@ export const remove = async (req, res) => {
         logger.info(`Checking if User is authorized`)
         if(foundProduct.owner_user_id!==req.currUser.id)
             return setResponse({message: "You don't have access to this Product"}, 403, res, "warn")
+
+        const foundImages = await Image.findAll({
+            where: { product_id: req.params.id }
+        })
+            .catch((error)=>  {
+                hasError = true
+                return setResponse(error, 400, res, "error")})
+
+        console.log("HERE "+foundImages)
+        for (const image of foundImages){
+            const params = {
+                Bucket: process.env.AWS_BUCKET_NAME,
+                Key: image.s3_bucket_path,
+            };
+            await s3.deleteObject(params).promise()
+                .then(async ()=> {
+                    console.log("Image deleted from s3 bucket")
+                    await image.destroy()
+                        .then(()=>
+                        {
+                            logger.info(`Image successfully deleted`)
+                            })
+                        .catch((error)=>  {
+                            hasError = true
+                            return setResponse(error, 400, res, "error")})
+                })
+                .catch((error)=>  {
+                    hasError = true
+                    return setResponse(error, 400, res, "error")})
+        }
 
         await foundProduct.destroy()
             .then(()=>{
