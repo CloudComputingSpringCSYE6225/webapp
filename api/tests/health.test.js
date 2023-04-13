@@ -11,7 +11,7 @@ import app from "../app.js";
 
 describe("GET Health Endpoint", () => {
     test("Check health on /healthz", async () => {
-        const res = await request(app).get("/healthz");
+        const res = await request(app).get("/health");
         expect(res.statusCode).toEqual(200);
     });
 });

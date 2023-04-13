@@ -9,6 +9,6 @@ export default (app) => {
     app.use("/v1/user", UserRouter)
     app.use("/v1/product", ProductRouter)
     app.use("/v1/product/", ImageRouter)
-    app.use("/healthz", HealthRouter)
+    app.use("/health", HealthRouter)
     app.use("*", (req, res)=> setResponse({message: "Invalid Route"}, 404, res))
 }
