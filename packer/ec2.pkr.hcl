@@ -53,7 +53,7 @@ variable "ami_environment" {
 }
 
 locals {
-  timestamp = regex_replace(timestamp(), "/[- TZ:]", "")
+  timestamp = regex_replace(timestamp(), "[- TZ:]", "")
 }
 
 source "amazon-ebs" "webapp-ami" {
