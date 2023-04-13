@@ -22,12 +22,6 @@ jobs:
       - run: npm test
   check_format:
     runs-on: ubuntu-latest
-    env:
-      PKR_VAR_POSTGRES_USER: ${{ secrets.DB_USER }}
-      PKR_VAR_POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      PKR_VAR_POSTGRES_HOST: ${{ secrets.DB_HOST }}
-      PKR_VAR_POSTGRES_PORT: ${{ secrets.DB_PORT }}
-      PKR_VAR_POSTGRES_DB: ${{ secrets.DB_DATABASE }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
