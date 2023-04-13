@@ -10,7 +10,7 @@ import app from "../app.js";
 // })
 
 describe("GET Health Endpoint", () => {
-    test("Check health on /healthz", async () => {
+    test("Check health on /health", async () => {
         const res = await request(app).get("/healthz");
         expect(res.statusCode).toEqual(200);
     });
