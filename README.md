@@ -6,8 +6,9 @@
 ## About
 Backend API using Node and ExpressJS to perform CRUD operations on users and products.
 The Database used is PostgreSQL.
-I have used the IntelliJ IDE for development. 
+Used IntelliJ IDE for development. 
 Base64 Authentication is implemented.
+We publish a message to SNS Topic when an image is created or deleted. Based on this SNS, Lambda function will be triggered
 
 #### Routes
 > User Routes
