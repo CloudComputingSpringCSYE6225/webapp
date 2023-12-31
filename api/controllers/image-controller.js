@@ -10,6 +10,8 @@ import multer from "multer";
 import {s3} from "../config/s3Config.js";
 import {logger} from "../config/logConfig.js";
 import {client} from "../config/cloudWatch.js";
+import { PublishCommand } from "@aws-sdk/client-sns";
+import {snsClient} from "../config/snsConfig.js";
 
 //express app invokes the function to create new image
 export const create = async (req, res) => {
@@ -72,8 +74,14 @@ export const create = async (req, res) => {
             Body: fileStream,
             ContentType: req.file.mimetype
         };
-        const uploaded = await s3.upload(params).promise();
+        const uploaded = await s3.upload(params).promise()
+            .catch(async (error)=>  {
+            hasError = true
+            await send_to_SNS_topic(params.Key, req.file.originalname, error, false, req.currUser.username)
+            logger.info(`Message published to SNS`)
+            return setResponse(error, 400, res, "error")});
 
+        let latestImage
         //Put s3_bucket_path in the Image db
         await Image.update({s3_bucket_path: uploaded.Key}, {
             where: { image_id: createdImageId },
@@ -87,12 +95,15 @@ export const create = async (req, res) => {
                     return setResponse(error, 400, res, "error")})
                 // console.log(updatedImage)
                 logger.info(`Image successfully uploaded`)
+                latestImage=updatedImage
                 return setResponse(updatedImage, 201, res)
             })
             .catch((error)=>  {
                 hasError = true
                 return setResponse(error, 400, res, "error")})
 
+        await send_to_SNS_topic(latestImage.s3_bucket_path, latestImage.file_name, "Image Created", true, req.currUser.username)
+        logger.info(`Message published to SNS`)
     } catch (error) {
         if(!hasError)
             return setResponse(error, 400, res, "error")
@@ -213,6 +224,8 @@ export const remove = async (req, res) => {
                 hasError = true
                 return setResponse(error, 400, res, "error")})
 
+        const image_path=foundImage.s3_bucket_path
+        const image_name=foundImage.file_name
         if(!foundImage)
             return setResponse({message: "No such Image. Please check id"}, 404, res, "warn")
 
@@ -235,13 +248,34 @@ export const remove = async (req, res) => {
                         hasError = true
                         return setResponse(error, 400, res, "error")})
             })
-            .catch((error)=>  {
+            .catch(async (error)=>  {
                 hasError = true
+                await send_to_SNS_topic(image_path, image_name, error, false, req.currUser.username)
+                logger.info(`Message published to SNS`)
                 return setResponse(error, 400, res, "error")})
 
+        await send_to_SNS_topic(image_path, image_name, "Image Deleted", true, req.currUser.username)
+        logger.info(`Message published to SNS`)
     }catch(error) {
         if(!hasError)
             return setResponse(error, 400, res, "error")
     }
 }
 
+const send_to_SNS_topic = async(image_path, image_name, msg, status, user_email) => {
+    const message = {
+        "image_path": image_path,
+        "image_name": image_name,
+        "message": msg,
+        "status": status,
+        "user_email": user_email
+    }
+
+    const input = { // PublishInput
+        TopicArn: process.env.SNS_TOPIC_ARN,
+        Message: message,
+        Subject: "Image Operation",
+    };
+    const command = new PublishCommand(input);
+    await client.send(command);
+}

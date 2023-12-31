@@ -18,6 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-sns": "^3.484.0",
     "app-root-path": "^3.1.0",
     "aws-sdk": "^2.1324.0",
     "bcrypt": "^5.1.0",

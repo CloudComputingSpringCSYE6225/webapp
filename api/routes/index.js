@@ -6,7 +6,7 @@ import {setResponse} from "../controllers/index.js";
 
 
 export default (app) => {
-    app.use("/v2/user", UserRouter)
+    app.use("/v1/user", UserRouter)
     app.use("/v1/product", ProductRouter)
     app.use("/v1/product/", ImageRouter)
     app.use("/healthz", HealthRouter)
