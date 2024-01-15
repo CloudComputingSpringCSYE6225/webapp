@@ -277,5 +277,5 @@ const send_to_SNS_topic = async(image_path, image_name, msg, status, user_email)
         Subject: "Image Operation",
     };
     const command = new PublishCommand(input);
-    await client.send(command);
+    await snsClient.send(command);
 }
