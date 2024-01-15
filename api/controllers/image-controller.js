@@ -273,7 +273,7 @@ const send_to_SNS_topic = async(image_path, image_name, msg, status, user_email)
 
     const input = { // PublishInput
         TopicArn: process.env.SNS_TOPIC_ARN,
-        Message: message,
+        Message: JSON.stringify(message),
         Subject: "Image Operation",
     };
     const command = new PublishCommand(input);
